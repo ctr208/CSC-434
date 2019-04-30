@@ -1,0 +1,200 @@
+// *******************************************************************
+// File: parser.c
+// Author: Chase Robison
+// Co-Author: Clayton S. Ferner
+// Date: 4/12/2019
+// Description: CSC 434 Assignment 4
+// 
+// 
+// 
+// *******************************************************************
+
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include "lexan.h"
+
+
+// *******************************************************************
+// Global Data
+
+int lookahead;              // Holds the index of the token following
+							// the next token.
+struct token nextToken;     // The token currently being processed.
+
+
+// Predefined tokens to be used when calling match()
+// DIV and MOD are in the SymbolTable as entries
+// 0 and 1, respectively, but that shouldn't matter
+// because match won't use the SymbolTable for
+// operators anyway.
+struct token MULT_TOK = { OP, 0, 0.0, "*", -1, 0 };
+struct token DIVI_TOK = { OP, 0, 0.0, "/", -1, 0 };
+struct token ADDI_TOK = { OP, 0, 0.0, "+", -1, 0 };
+struct token SUBT_TOK = { OP, 0, 0.0, "-", -1, 0 };
+struct token DIV_TOK = { OP, 0, 0.0, "DIV", 0, 0 };
+struct token MOD_TOK = { OP, 0, 0.0, "MOD", 1, 0 };
+struct token LPAR_TOK = { OP, 0, 0.0, "(", -1, 0 };
+struct token RPAR_TOK = { OP, 0, 0.0, ")", -1, 0 };
+struct token INT_TOK = { INT, 0, 0.0, "", -1, 0 };
+struct token FLOAT_TOK = { FLOAT, 0, 0.0, "", -1, 0 };
+struct token ID_TOK = { ID, 0, 0.0, "", -1, 0 };
+
+// *******************************************************************
+// Function declarations
+int main(int argc, char *argv[]);
+void parse();
+void syntaxError(char *message, struct token t);
+void match(struct token t);
+void factor();
+void term();
+void expr();
+char *tokenToString(struct token nextToken);
+
+
+
+
+
+
+// *******************************************************************
+// Function: main()
+// Parameters:
+// Return:
+// Description: 
+// *******************************************************************
+int main(int argc, char *argv[])
+{
+	initSymbolTable();
+	lexan();
+	lookahead = 0;
+	parse();
+}
+
+// *******************************************************************
+// Function: parse()
+// Parameters:
+// Return:
+// Description: 
+// *******************************************************************
+void parse()
+{
+
+	struct token firstToken = ListOfTokens[0];
+
+	//inrement lookahead
+	lookahead++;
+
+	//while lookahead IS < arrayOfToekns.length call expr
+	while (lookahead < tokenTableSize)
+	{
+		expr();
+	}
+
+}
+
+// *******************************************************************
+// Function: syntaxError()
+// Parameters:
+// Return:
+// Description: 
+// *******************************************************************
+void syntaxError(char * message, struct token t)
+{
+	
+}
+
+// *******************************************************************
+// Function: expr()
+// Parameters:
+// Return:
+// Description: 
+// *******************************************************************
+void expr()
+{
+	term();
+
+}
+
+// *******************************************************************
+// Function: term()
+// Parameters:
+// Return:
+// Description: 
+// *******************************************************************
+void term()
+{
+	factor();
+
+}
+
+// *******************************************************************
+// Function: factor()
+// Parameters:
+// Return:
+// Description: 
+// *******************************************************************
+void factor()
+{
+
+
+}
+
+// *******************************************************************
+// Function: match()
+// Parameters: struct token t
+// Return:
+// Description: 
+// *******************************************************************
+void match(struct token t)
+{
+
+
+}
+
+// *******************************************************************
+// Function: tokenToString()
+// Parameters: a Token
+// Return: a string representation of a token that can be used to print
+// Description: This function will create a string representation
+//              of a token, which might be useful for debugging.
+//              The string representation must be static, so that the
+//              string can be used after the call to the function.
+//              Because of this, any subsequent call to the function will
+//              overwrite the last result.  For example,
+//
+//     printf("token 1 = %s token 2 = %s\n", tokenToString(token1), 
+//                                           tokenToString(token2));
+//
+//              Will result in the same string being printed for
+//              both tokens.  The above statement should be split
+//              into two SEPARATE print statements to avoid that.
+// *******************************************************************
+char *tokenToString(struct token nextToken)
+{
+	static char result[BUFSIZ];  // Static so that the string still 
+								 // exists after the function returns.
+
+	switch (nextToken.tokenType) {
+
+		// We need to use snprintf() to avoid a buffer overflow.
+	case OP:
+		snprintf(result, BUFSIZ - 1, "OP %s ", nextToken.operator);
+		break;
+	case ID:
+		snprintf(result, BUFSIZ - 1, "ID %s ",
+			SymbolTable[nextToken.symbolEntry].name);
+		break;
+	case INT:
+		snprintf(result, BUFSIZ - 1, "INT %d ", nextToken.intValue);
+		break;
+	case FLOAT:
+		snprintf(result, BUFSIZ - 1, "FLOAT %f ", nextToken.floatValue);
+		break;
+	default:
+		snprintf(result, BUFSIZ - 1, "UNKNOWN ");
+		break;
+	}
+
+	return result;
+}
