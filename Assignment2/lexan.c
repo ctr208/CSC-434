@@ -108,6 +108,9 @@ void initSymbolTable() {
 
 }
 int lookup(char* s) {
+
+
+
 	return 1;
 }
 int insert(char* s, enum token_type tokenType) {
